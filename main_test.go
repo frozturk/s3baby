@@ -68,6 +68,16 @@ func TestPutDecodesAwsChunkedBodies(t *testing.T) {
 	}
 }
 
+func TestGetAppliesResponseHeaderOverrides(t *testing.T) {
+	srv := newServer(t)
+	do(t, http.MethodPut, srv.URL+"/bucket/f.pdf", "pdf", map[string]string{"Content-Type": "application/pdf"})
+
+	res := do(t, http.MethodGet, srv.URL+"/bucket/f.pdf?response-content-disposition=attachment%3B%20filename%3D%22x.pdf%22", "", nil)
+	if got := res.Header.Get("Content-Disposition"); got != `attachment; filename="x.pdf"` {
+		t.Fatalf("got %q", got)
+	}
+}
+
 func TestMissingKeyIsNoSuchKey(t *testing.T) {
 	res := do(t, http.MethodGet, newServer(t).URL+"/bucket/nope", "", nil)
 	if body := read(t, res); res.StatusCode != http.StatusNotFound || !strings.Contains(body, "NoSuchKey") {

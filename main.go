@@ -20,6 +20,15 @@ type server struct {
 	root string
 }
 
+var responseOverrides = map[string]string{
+	"response-content-type":        "Content-Type",
+	"response-content-disposition": "Content-Disposition",
+	"response-content-language":    "Content-Language",
+	"response-content-encoding":    "Content-Encoding",
+	"response-cache-control":       "Cache-Control",
+	"response-expires":             "Expires",
+}
+
 type meta struct {
 	ContentType string `json:"content_type"`
 	ETag        string `json:"etag"`
@@ -233,6 +242,11 @@ func (s *server) get(w http.ResponseWriter, r *http.Request, bucket, key string)
 	w.Header().Set("Content-Type", m.ContentType)
 	if m.ETag != "" {
 		w.Header().Set("ETag", m.ETag)
+	}
+	for param, header := range responseOverrides {
+		if v := r.URL.Query().Get(param); v != "" {
+			w.Header().Set(header, v)
+		}
 	}
 	http.ServeContent(w, r, "", info.ModTime(), f)
 }

@@ -2,7 +2,7 @@
 
 A tiny S3 stand-in for local development. Objects are stored as plain files under `data/<bucket>/<key>`.
 
-It supports path-style `PUT`, `GET`, `HEAD` and `DELETE`, including presigned URLs (signatures are not checked), the AWS SDK's `aws-chunked` uploads, range requests, and CORS for uploads straight from the browser. Single binary, standard library only.
+It supports path-style `PUT`, `GET`, `HEAD` and `DELETE`, including presigned URLs (signatures are not checked) with `response-*` header overrides, the AWS SDK's `aws-chunked` uploads, range requests, and CORS for uploads straight from the browser. Single binary, standard library only.
 
 ## Run
 
